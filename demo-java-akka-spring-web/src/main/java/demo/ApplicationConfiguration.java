@@ -20,9 +20,9 @@ class ApplicationConfiguration {
 
     @Bean(destroyMethod = "shutdown")
     public ActorSystem actorSystem() {
-        ActorSystem system = ActorSystem.create("demo-actor-system", akkaConfiguration());
+        ActorSystem actorSystem = ActorSystem.create("demo-actor-system", akkaConfiguration());
         springExtension.initialize(applicationContext);
-        return system;
+        return actorSystem;
     }
 
     @Bean

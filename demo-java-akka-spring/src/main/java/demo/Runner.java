@@ -31,16 +31,16 @@ class Runner implements CommandLineRunner {
 
     @Override
     public void run(String[] args) throws Exception {
-        ActorRef workerActor = actorSystem.actorOf(springExtension.props("workerActor"), "worker-actor");
-
-        workerActor.tell(new WorkerActor.Request(), null);
-        workerActor.tell(new WorkerActor.Request(), null);
-        workerActor.tell(new WorkerActor.Request(), null);
-
-        FiniteDuration duration = FiniteDuration.create(1, TimeUnit.SECONDS);
-        Future<Object> awaitable = Patterns.ask(workerActor, new WorkerActor.Response(), Timeout.durationToTimeout(duration));
-
         try {
+            ActorRef workerActor = actorSystem.actorOf(springExtension.props("workerActor"), "worker-actor");
+
+            workerActor.tell(new WorkerActor.Request(), null);
+            workerActor.tell(new WorkerActor.Request(), null);
+            workerActor.tell(new WorkerActor.Request(), null);
+
+            FiniteDuration duration = FiniteDuration.create(1, TimeUnit.SECONDS);
+            Future<Object> awaitable = Patterns.ask(workerActor, new WorkerActor.Response(), Timeout.durationToTimeout(duration));
+
             logger.info("Response: " + Await.result(awaitable, duration));
         } finally {
             actorSystem.terminate();
