@@ -12,17 +12,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class ApplicationConfiguration {
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    private SpringExtension springExtension;
-
     @Bean
     public ActorSystem actorSystem() {
-        ActorSystem actorSystem = ActorSystem.create("demo-actor-system", akkaConfiguration());
-        springExtension.initialize(applicationContext);
-        return actorSystem;
+        return ActorSystem.create("demo-actor-system", akkaConfiguration());
     }
 
     @Bean
