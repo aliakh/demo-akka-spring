@@ -32,7 +32,7 @@ class Runner implements CommandLineRunner {
     @Override
     public void run(String[] args) throws Exception {
         try {
-            ActorRef workerActor = actorSystem.actorOf(springExtension.props("workerActor"), "worker-actor");
+            ActorRef workerActor = actorSystem.actorOf(springExtension.props(WorkerActor.class), "worker-actor");
 
             workerActor.tell(new WorkerActor.Request(), null);
             workerActor.tell(new WorkerActor.Request(), null);
