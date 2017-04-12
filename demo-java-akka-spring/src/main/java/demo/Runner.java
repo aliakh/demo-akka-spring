@@ -1,5 +1,7 @@
 package demo;
 
+import javax.annotation.Resource;
+
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
@@ -29,14 +31,32 @@ class Runner implements CommandLineRunner {
     @Autowired
     private SpringExtension springExtension;
 
+    @Resource
+	private ActorRef autowiredSingleton;
+
+    @Resource(name = "autowiredSingleton")
+	private ActorRef autowiredSingleton2;
+
+    @Resource
+	private ActorRef autowiredPrototype;
+
+	@Resource(name = "autowiredPrototype")
+	private ActorRef autowiredPrototype2;
+
     @Override
     public void run(String[] args) throws Exception {
         try {
-            ActorRef workerActor = actorSystem.actorOf(springExtension.props(WorkerActor.class), "worker-actor");
-			runWorker(workerActor);
+            ActorRef manualWorker = actorSystem.actorOf(springExtension.props(WorkerActor.class), "worker-actor");
+			runWorker(manualWorker);
 
-			ActorRef workerActor2 = actorSystem.actorOf(springExtension.props(WorkerActor.class, 100), "worker-actor-2");
-			runWorker(workerActor2);
+			ActorRef manualWorkerWithArgs = actorSystem.actorOf(springExtension.props(WorkerActor.class, 100), "worker-actor-2");
+			runWorker(manualWorkerWithArgs);
+
+			runWorker(autowiredSingleton);
+			runWorker(autowiredSingleton2);
+
+			runWorker(autowiredPrototype);
+			runWorker(autowiredPrototype2);
         } finally {
             actorSystem.terminate();
             Await.result(actorSystem.whenTerminated(), Duration.Inf());
