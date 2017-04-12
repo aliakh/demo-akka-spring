@@ -33,18 +33,24 @@ class Runner implements CommandLineRunner {
     public void run(String[] args) throws Exception {
         try {
             ActorRef workerActor = actorSystem.actorOf(springExtension.props(WorkerActor.class), "worker-actor");
+			runWorker(workerActor);
 
-            workerActor.tell(new WorkerActor.Request(), null);
-            workerActor.tell(new WorkerActor.Request(), null);
-            workerActor.tell(new WorkerActor.Request(), null);
-
-            FiniteDuration duration = FiniteDuration.create(1, TimeUnit.SECONDS);
-            Future<Object> awaitable = Patterns.ask(workerActor, new WorkerActor.Response(), Timeout.durationToTimeout(duration));
-
-            logger.info("Response: " + Await.result(awaitable, duration));
+			ActorRef workerActor2 = actorSystem.actorOf(springExtension.props(WorkerActor.class, 100), "worker-actor-2");
+			runWorker(workerActor2);
         } finally {
             actorSystem.terminate();
             Await.result(actorSystem.whenTerminated(), Duration.Inf());
         }
     }
+
+	private void runWorker(final ActorRef workerActor) throws Exception {
+		workerActor.tell(new WorkerActor.Request(), null);
+		workerActor.tell(new WorkerActor.Request(), null);
+		workerActor.tell(new WorkerActor.Request(), null);
+
+		FiniteDuration duration = FiniteDuration.create(1, TimeUnit.SECONDS);
+		Future<Object> awaitable = Patterns.ask(workerActor, new WorkerActor.Response(), Timeout.durationToTimeout(duration));
+
+		logger.info("Response: " + Await.result(awaitable, duration));
+	}
 }

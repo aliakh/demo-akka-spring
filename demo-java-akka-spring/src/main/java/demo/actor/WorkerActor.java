@@ -14,7 +14,15 @@ public class WorkerActor extends UntypedActor {
     @Autowired
     private BusinessService businessService;
 
-    private int count = 0;
+	private int count = 0;
+
+	public WorkerActor() {
+		this(0);
+	}
+
+    public WorkerActor(int initialCount) {
+    	count = initialCount;
+	}
 
     @Override
     public void onReceive(Object message) throws Exception {

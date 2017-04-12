@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 public class SpringExtension implements Extension {
 
 	@Autowired
-    private ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 
-    public Props props(Class<? extends Actor> actorClass) {
-        return Props.create(SpringActorProducer.class, applicationContext, actorClass);
-    }
+	public Props props(Class<? extends Actor> actorClass, Object... args) {
+		return Props.create(SpringActorProducer.class, applicationContext, actorClass, args);
+	}
 }
