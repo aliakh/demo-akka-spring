@@ -2,7 +2,7 @@ package demo.actor;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import demo.di.SpringExtension;
+import demo.di.SpringActorProps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -16,16 +16,16 @@ public class ActorConfiguration {
 	private ActorSystem actorSystem;
 
 	@Autowired
-	private SpringExtension springExtension;
+	private SpringActorProps springActorProps;
 
 	@Bean
 	public ActorRef autowiredSingleton() {
-		return actorSystem.actorOf(springExtension.props("workerActor"), "singleton-worker-actor");
+		return actorSystem.actorOf(springActorProps.props("workerActor"), "singleton-worker-actor");
 	}
 
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	public ActorRef autowiredPrototype() {
-		return actorSystem.actorOf(springExtension.props("workerActor"));
+		return actorSystem.actorOf(springActorProps.props("workerActor"));
 	}
 }

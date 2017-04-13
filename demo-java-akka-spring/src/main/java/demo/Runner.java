@@ -7,7 +7,7 @@ import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import demo.actor.WorkerActor;
-import demo.di.SpringExtension;
+import demo.di.SpringActorProps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ class Runner implements CommandLineRunner {
     private ActorSystem actorSystem;
 
     @Autowired
-    private SpringExtension springExtension;
+    private SpringActorProps springActorProps;
 
     @Resource
 	private ActorRef autowiredSingleton;
@@ -46,13 +46,13 @@ class Runner implements CommandLineRunner {
     @Override
     public void run(String[] args) throws Exception {
         try {
-            ActorRef manualWorker = actorSystem.actorOf(springExtension.props("workerActor"), "worker-actor");
+            ActorRef manualWorker = actorSystem.actorOf(springActorProps.props("workerActor"), "worker-actor");
 			runWorker(manualWorker);
 
-			ActorRef manualWorkerWithArgs = actorSystem.actorOf(springExtension.props("workerActor", 100), "worker-actor-2");
+			ActorRef manualWorkerWithArgs = actorSystem.actorOf(springActorProps.props("workerActor", 100), "worker-actor-2");
 			runWorker(manualWorkerWithArgs);
 
-			ActorRef manualWorkerFromClass = actorSystem.actorOf(springExtension.props(WorkerActor.class), "worker-actor-from-class");
+			ActorRef manualWorkerFromClass = actorSystem.actorOf(springActorProps.props(WorkerActor.class), "worker-actor-from-class");
 			runWorker(manualWorkerFromClass);
 
 			runWorker(autowiredSingleton);
