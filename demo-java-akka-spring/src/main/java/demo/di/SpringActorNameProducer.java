@@ -4,13 +4,13 @@ import akka.actor.Actor;
 import akka.actor.IndirectActorProducer;
 import org.springframework.context.ApplicationContext;
 
-public class SpringActorProducer implements IndirectActorProducer {
+public class SpringActorNameProducer implements IndirectActorProducer {
 
     private final ApplicationContext applicationContext;
     private final String actorBeanName;
 	private final Object[] args;
 
-	public SpringActorProducer(ApplicationContext applicationContext, String actorBeanName, Object... args) {
+	public SpringActorNameProducer(ApplicationContext applicationContext, String actorBeanName, Object... args) {
         this.applicationContext = applicationContext;
         this.actorBeanName = actorBeanName;
 		this.args = args;

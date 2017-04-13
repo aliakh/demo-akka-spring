@@ -52,6 +52,9 @@ class Runner implements CommandLineRunner {
 			ActorRef manualWorkerWithArgs = actorSystem.actorOf(springExtension.props("workerActor", 100), "worker-actor-2");
 			runWorker(manualWorkerWithArgs);
 
+			ActorRef manualWorkerFromClass = actorSystem.actorOf(springExtension.props(WorkerActor.class), "worker-actor-from-class");
+			runWorker(manualWorkerFromClass);
+
 			runWorker(autowiredSingleton);
 			runWorker(autowiredSingleton2);
 
