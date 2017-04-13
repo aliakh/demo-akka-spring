@@ -20,12 +20,12 @@ public class ActorConfiguration {
 
 	@Bean
 	public ActorRef autowiredSingleton() {
-		return actorSystem.actorOf(springExtension.props(WorkerActor.class), "singleton-worker-actor");
+		return actorSystem.actorOf(springExtension.props("workerActor"), "singleton-worker-actor");
 	}
 
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 	public ActorRef autowiredPrototype() {
-		return actorSystem.actorOf(springExtension.props(WorkerActor.class));
+		return actorSystem.actorOf(springExtension.props("workerActor"));
 	}
 }

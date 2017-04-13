@@ -46,10 +46,10 @@ class Runner implements CommandLineRunner {
     @Override
     public void run(String[] args) throws Exception {
         try {
-            ActorRef manualWorker = actorSystem.actorOf(springExtension.props(WorkerActor.class), "worker-actor");
+            ActorRef manualWorker = actorSystem.actorOf(springExtension.props("workerActor"), "worker-actor");
 			runWorker(manualWorker);
 
-			ActorRef manualWorkerWithArgs = actorSystem.actorOf(springExtension.props(WorkerActor.class, 100), "worker-actor-2");
+			ActorRef manualWorkerWithArgs = actorSystem.actorOf(springExtension.props("workerActor", 100), "worker-actor-2");
 			runWorker(manualWorkerWithArgs);
 
 			runWorker(autowiredSingleton);

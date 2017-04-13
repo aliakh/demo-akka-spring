@@ -1,6 +1,5 @@
 package demo.di;
 
-import akka.actor.Actor;
 import akka.actor.Extension;
 import akka.actor.Props;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ public class SpringExtension implements Extension {
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	public Props props(Class<? extends Actor> actorClass, Object... args) {
-		return Props.create(SpringActorProducer.class, applicationContext, actorClass, args);
+    public Props props(String actorBeanName, Object... args) {
+        return Props.create(SpringActorProducer.class, applicationContext, actorBeanName, args);
 	}
 }
