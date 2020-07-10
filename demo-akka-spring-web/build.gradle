@@ -13,6 +13,6 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation "com.typesafe.akka:akka-actor_2.11:2.4.3"
-    implementation "com.typesafe.akka:akka-slf4j_2.11:2.4.3"
+    implementation 'com.typesafe.akka:akka-actor_2.11:2.4.3'
+    implementation 'com.typesafe.akka:akka-slf4j_2.11:2.4.3'
 }
