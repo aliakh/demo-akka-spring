@@ -1,0 +1,4 @@
+rootProject.name = 'demo-akka-spring'
+
+include 'demo-java-akka-spring'
+include 'demo-java-akka-spring-web'
