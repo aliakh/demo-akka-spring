@@ -1,4 +1,4 @@
-package demo.model;
+package demo.web.model;
 
 public class Message {
 

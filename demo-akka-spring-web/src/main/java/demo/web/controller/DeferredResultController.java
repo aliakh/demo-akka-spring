@@ -1,7 +1,7 @@
-package demo.controller;
+package demo.web.controller;
 
-import demo.model.Message;
-import demo.service.CompletableFutureService;
+import demo.web.model.Message;
+import demo.web.service.CompletableFutureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

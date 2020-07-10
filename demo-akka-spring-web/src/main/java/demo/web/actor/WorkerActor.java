@@ -1,8 +1,8 @@
-package demo.actor;
+package demo.web.actor;
 
 import akka.actor.UntypedActor;
-import demo.model.Message;
-import demo.service.BusinessService;
+import demo.web.model.Message;
+import demo.web.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
