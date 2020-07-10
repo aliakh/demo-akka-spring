@@ -1,7 +1,7 @@
-package demo.actor;
+package demo.console.actor;
 
 import akka.actor.UntypedActor;
-import demo.service.BusinessService;
+import demo.console.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

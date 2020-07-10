@@ -1,11 +1,11 @@
-package demo;
+package demo.console;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
-import demo.actor.WorkerActor;
-import demo.di.SpringExtension;
+import demo.console.actor.WorkerActor;
+import demo.console.di.SpringExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
