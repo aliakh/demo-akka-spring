@@ -16,10 +16,10 @@ public class WorkerActor extends UntypedActor {
     @Autowired
     private BusinessService businessService;
 
-    private final CompletableFuture<Message> future;
+    private final CompletableFuture<Message> completableFuture;
 
-    public WorkerActor(CompletableFuture<Message> future) {
-        this.future = future;
+    public WorkerActor(CompletableFuture<Message> completableFuture) {
+        this.completableFuture = completableFuture;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class WorkerActor extends UntypedActor {
         businessService.perform(this + " " + message);
 
         if (message instanceof Message) {
-            future.complete((Message) message);
+            completableFuture.complete((Message) message);
         } else {
             unhandled(message);
         }

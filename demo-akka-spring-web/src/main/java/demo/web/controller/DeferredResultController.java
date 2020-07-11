@@ -22,15 +22,15 @@ public class DeferredResultController {
 
     @RequestMapping("/async-non-blocking")
     public DeferredResult<Message> getAsyncNonBlocking() {
-        DeferredResult<Message> deferred = new DeferredResult<>(DEFERRED_RESULT_TIMEOUT);
-        CompletableFuture<Message> future = completableFutureService.get("async-non-blocking", id.getAndIncrement());
-        future.whenComplete((result, error) -> {
+        DeferredResult<Message> deferredResult = new DeferredResult<>(DEFERRED_RESULT_TIMEOUT);
+        CompletableFuture<Message> completableFuture = completableFutureService.get("async-non-blocking", id.getAndIncrement());
+        completableFuture.whenComplete((result, error) -> {
             if (error != null) {
-                deferred.setErrorResult(error);
+                deferredResult.setErrorResult(error);
             } else {
-                deferred.setResult(result);
+                deferredResult.setResult(result);
             }
         });
-        return deferred;
+        return deferredResult;
     }
 }
