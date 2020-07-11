@@ -15,7 +15,7 @@ public class DeferredResultController {
 
     private static final Long DEFERRED_RESULT_TIMEOUT = 1000L;
 
-    private AtomicLong id = new AtomicLong(0);
+    private final AtomicLong id = new AtomicLong(0);
 
     @Autowired
     private CompletableFutureService completableFutureService;
