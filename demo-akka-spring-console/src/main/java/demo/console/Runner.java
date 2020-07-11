@@ -5,7 +5,7 @@ import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import demo.console.actor.WorkerActor;
-import demo.console.di.SpringExtension;
+import demo.console.spring.SpringExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

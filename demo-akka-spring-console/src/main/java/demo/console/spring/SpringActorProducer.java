@@ -1,4 +1,4 @@
-package demo.console.di;
+package demo.console.spring;
 
 import akka.actor.Actor;
 import akka.actor.IndirectActorProducer;
