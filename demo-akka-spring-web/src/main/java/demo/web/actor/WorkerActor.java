@@ -16,7 +16,7 @@ public class WorkerActor extends UntypedActor {
     @Autowired
     private BusinessService businessService;
 
-    final private CompletableFuture<Message> future;
+    private final CompletableFuture<Message> future;
 
     public WorkerActor(CompletableFuture<Message> future) {
         this.future = future;

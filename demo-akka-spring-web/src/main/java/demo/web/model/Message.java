@@ -2,8 +2,8 @@ package demo.web.model;
 
 public class Message {
 
-    final private String payload;
-    final private long id;
+    private final String payload;
+    private final long id;
 
     public Message(String payload, long id) {
         this.payload = payload;

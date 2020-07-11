@@ -6,8 +6,8 @@ import org.springframework.context.ApplicationContext;
 
 public class SpringActorProducer implements IndirectActorProducer {
 
-    final private ApplicationContext applicationContext;
-    final private String actorBeanName;
+    private final ApplicationContext applicationContext;
+    private final String actorBeanName;
 
     public SpringActorProducer(ApplicationContext applicationContext, String actorBeanName) {
         this.applicationContext = applicationContext;
