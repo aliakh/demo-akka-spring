@@ -2,8 +2,8 @@ package demo.web.service;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import demo.web.di.SpringExtension;
 import demo.web.model.Message;
+import demo.web.spring.SpringExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
