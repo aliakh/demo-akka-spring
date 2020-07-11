@@ -1,4 +1,4 @@
-package demo.web.di;
+package demo.web.spring;
 
 import akka.actor.Extension;
 import akka.actor.Props;
