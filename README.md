@@ -51,7 +51,7 @@ public class SpringExtension implements Extension {
 }
 ```
 
-Thirdly, a Spring _@Configuration_ is used to provide the _ActorSystem_ as a Spring bean. The _ApplicaionConfiguration_ creates the _ActorSystem_ from the Akka configuration, overriding file _application.conf,_ and registers the _SpringExtension_ in it.
+Thirdly, a Spring _@Configuration_ is used to provide the _ActorSystem_ as a Spring bean. The _ApplicaionConfiguration_ creates the _ActorSystem_ from the Akka configuration, overriding the _application.conf_ file, and registers the _SpringExtension_ in it.
 
 ```
 @Configuration
@@ -159,9 +159,9 @@ class Runner implements CommandLineRunner {
 
 ## Spring Web application with Akka
 
-In the previous section was explained how to use Akka in a Spring _console _application. The main purpose of that example was to illustrate how to get actors from Spring _ApplicationContext_. But the drawback of this example was a blocking call between the actor-based part and the rest of the application. Such usage can cease all Akka advantages in production applications. So in this section is explained how to use Akka in an asynchronous and non-blocking Spring _web_-application.
+In the previous section was explained how to use Akka in a Spring _console_ application. The main purpose of that example was to illustrate how to get actors from Spring _ApplicationContext_. But the drawback of this example was a blocking call between the actor-based part and the rest of the application. Such usage can cease all Akka advantages in production applications. So in this section is explained how to use Akka in an asynchronous and non-blocking Spring _web_ application.
 
-For this can be used asynchronous request processing in Spring MVC that is based on Servlet 3.0/3.1 specification. Instead of returning a value, a _@Controller_ method should return a _DeferredResult_ or a _Callable_ of the value. In multi-tier applications, a _@Service_ method should return a _future (_also known as _promise_, _delay_, or _deferred)_ - a proxy to a value that isn’t completed yet. There are some interfaces that have support for _future_ processing in their frameworks:
+For this can be used asynchronous request processing in Spring MVC that is based on Servlet 3.0/3.1 specification. Instead of returning a value, a _@Controller_ method should return a _DeferredResult_ or a _Callable_ of the value. In multi-tier applications, a _@Service_ method should return a _future_ (also known as _promise_, _delay_, or _deferred)_ - a proxy to a value that isn’t completed yet. There are some interfaces that have support for _future_ processing in their frameworks:
 
 *   _java.util.concurrent.CompletableFuture_ (Java 8)
 *   _rx.Observable_ (RxJava)
