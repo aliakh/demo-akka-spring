@@ -3,7 +3,7 @@
 
 ## Introduction
 
-In the previous posts (parts [one](https://www.linkedin.com/pulse/rest-services-scala-akka-spray-part-one-aliaksandr-liakh), [two](https://www.linkedin.com/pulse/rest-services-scala-akka-spray-part-2-aliaksandr-liakh), [three](https://www.linkedin.com/pulse/rest-services-scala-akka-spray-part-3-aliaksandr-liakh), [four](https://www.linkedin.com/pulse/rest-services-scala-akka-spray-part-4-aliaksandr-liakh)) was explained some Akka usage patterns in a Scala+Spray web-application. But a lot of regular JVM applications use much simpler tools stack. In this post is explained how to use Akka in a Java+Spring console application. (Notice that Akka has rather different [Scala](http://doc.akka.io/docs/akka/current/scala.html) and [Java](http://doc.akka.io/docs/akka/current/java.html) APIs).
+In this article is explained how to integrate Akka actors into Spring _console_ and _web_ applications.
 
 
 ## Spring console application with Akka
@@ -57,7 +57,7 @@ public class SpringExtension implements Extension {
 ```
 
 
-Thirdly, a Spring _@Configuration_ is used to provide the _ActorSystem_ as a Spring bean. The _ApplicaionConfiguration_ creates the _ActorSystem_ from the Akka configuration, overriding file _application.conf_ and registers the _SpringExtension_ in it.
+Thirdly, a Spring _@Configuration_ is used to provide the _ActorSystem_ as a Spring bean. The _ApplicaionConfiguration_ creates the _ActorSystem_ from the Akka configuration, overriding file _application.conf,_ and registers the _SpringExtension_ in it.
 
 
 ```
@@ -96,23 +96,23 @@ public class WorkerActor extends UntypedActor {
    @Autowired
    private BusinessService businessService;
 
-   private int count = 0;
+   private final CompletableFuture<Message> completableFuture;
+
+   public WorkerActor(CompletableFuture<Message> completableFuture) {
+       this.completableFuture = completableFuture;
+   }
 
    @Override
    public void onReceive(Object message) throws Exception {
-       if (message instanceof Request) {
-           businessService.perform(this + " " + (++count));
-       } else if (message instanceof Response) {
-           getSender().tell(count, getSelf());
+       businessService.perform(this + " " + message);
+
+       if (message instanceof Message) {
+           completableFuture.complete((Message) message);
        } else {
            unhandled(message);
        }
-   }
 
-   public static class Request {
-   }
-
-   public static class Response {
+       getContext().stop(self());
    }
 }
 ```
@@ -174,18 +174,16 @@ class Runner implements CommandLineRunner {
 
 ## Spring Web application with Akka
 
-The previous post was explained how to use Akka in a Java+Spring _console _application. The main purpose of this example was to illustrate how to get actors from Spring _ApplicationContext_. But the drawback of this example was a blocking call between the actor-based part and the rest of the application. Such usage can cease all Akka advantages in production applications. So in this post is explained how to use Akka in an asynchronous and non-blocking Java+Spring _web_-application.
+In the previous section was explained how to use Akka in a Spring _console _application. The main purpose of that example was to illustrate how to get actors from Spring _ApplicationContext_. But the drawback of this example was a blocking call between the actor-based part and the rest of the application. Such usage can cease all Akka advantages in production applications. So in this section is explained how to use Akka in an asynchronous and non-blocking Spring _web_-application.
 
-For this can be used asynchronous request processing in Spring MVC that is based on Servlet 3.0 specification.  Instead of returning a value, a @_Controller_ method should return a _DeferredResult _or a _Callable_ of the value. In multi-tier applications, a @_Service_ method should return a _future (_also known as _promise_, _delay,_ or _deferred)_ - a proxy to a value that isn’t completed yet. There are some interfaces that have support for _future_ processing in their frameworks:
+For this can be used asynchronous request processing in Spring MVC that is based on Servlet 3.0/3.1 specification. Instead of returning a value, a _@Controller_ method should return a _DeferredResult_ or a _Callable_ of the value. In multi-tier applications, a _@Service_ method should return a _future (_also known as _promise_, _delay_, or _deferred)_ - a proxy to a value that isn’t completed yet. There are some interfaces that have support for _future_ processing in their frameworks:
 
 
 
-*   java.util.concurrent.CompletableFuture (Java 8)
-*   rx.Observable (RxJava)
-*   org.springframework.util.concurrent.ListenableFuture (Spring Core)
-*   com.google.common.util.concurrent.ListenableFuture (Google Guava)
-
-The application in the following GitHub [repository](https://github.com/aliakh/demo-reactive-rest-servers) illustrates how to integrate such _future_ interfaces in @_Service_ methods with _DeferredResult_ in @_Controller _methods.
+*   _java.util.concurrent.CompletableFuture_ (Java 8)
+*   _rx.Observable_ (RxJava)
+*   _org.springframework.util.concurrent.ListenableFuture_ (Spring Core)
+*   _com.google.common.util.concurrent.ListenableFuture_ (Google Guava)
 
 The main difference with the previous example application is that the _WorkerActor_ has a non-default constructor. That required refactoring of _SpringActorProducer_ and _SpringExtension_ to have the ability to pass the constructor arguments.
 
@@ -238,7 +236,7 @@ public class SpringExtension implements Extension {
 ```
 
 
-The example application is a web-application that is based on Spring Boot. In the _CompletableFutureService.get_ method, a _WorkerActor_ is created with an incomplete _CompletableFuture_ as a constructor parameter. Notice how the Spring _prototype_-scope actor is injected into the _singleton_-scope _CompletableFutureService_. Then a _Message_ is sent to the _WorkerActor_ with the _tell_ method.
+The example application is a web application that is based on Spring Boot. In the _CompletableFutureService.get_ method, a _WorkerActor_ is created with an incomplete _CompletableFuture_ as a constructor parameter. Notice how the Spring _prototype_-scope actor is injected into the _singleton_-scope _CompletableFutureService_. Then a _Message_ is sent to the _WorkerActor_ with the _tell_ method.
 
 
 ```
@@ -252,10 +250,10 @@ public class CompletableFutureService {
    private SpringExtension springExtension;
 
    public CompletableFuture<Message> get(String payload, Long id) {
-       CompletableFuture<Message> future = new CompletableFuture<>();
-       ActorRef workerActor = actorSystem.actorOf(springExtension.props("workerActor", future), "worker-actor");
+       CompletableFuture<Message> completableFuture = new CompletableFuture<>();
+       ActorRef workerActor = actorSystem.actorOf(springExtension.props("workerActor", completableFuture), "worker-actor");
        workerActor.tell(new Message(payload, id), null);
-       return future;
+       return completableFuture;
    }
 }
 ```
@@ -272,10 +270,10 @@ public class WorkerActor extends UntypedActor {
    @Autowired
    private BusinessService businessService;
 
-   private final CompletableFuture<Message> future;
+   private final CompletableFuture<Message> completableFuture;
 
-   public WorkerActor(CompletableFuture<Message> future) {
-       this.future = future;
+   public WorkerActor(CompletableFuture<Message> completableFuture) {
+       this.completableFuture = completableFuture;
    }
 
    @Override
@@ -283,7 +281,7 @@ public class WorkerActor extends UntypedActor {
        businessService.perform(this + " " + message);
 
        if (message instanceof Message) {
-           future.complete((Message) message);
+           completableFuture.complete((Message) message);
        } else {
            unhandled(message);
        }
@@ -310,16 +308,16 @@ public class DeferredResultController {
 
    @RequestMapping("/async-non-blocking")
    public DeferredResult<Message> getAsyncNonBlocking() {
-       DeferredResult<Message> deferred = new DeferredResult<>(DEFERRED_RESULT_TIMEOUT);
-       CompletableFuture<Message> future = completableFutureService.get("async-non-blocking", id.getAndIncrement());
-       future.whenComplete((result, error) -> {
+       DeferredResult<Message> deferredResult = new DeferredResult<>(DEFERRED_RESULT_TIMEOUT);
+       CompletableFuture<Message> completableFuture = completableFutureService.get("async-non-blocking", id.getAndIncrement());
+       completableFuture.whenComplete((result, error) -> {
            if (error != null) {
-               deferred.setErrorResult(error);
+               deferredResult.setErrorResult(error);
            } else {
-               deferred.setResult(result);
+               deferredResult.setResult(result);
            }
        });
-       return deferred;
+       return deferredResult;
    }
 }
 ```
